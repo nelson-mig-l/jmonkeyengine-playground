@@ -1,5 +1,6 @@
 package com.hatebit.chapter2;
 
+import com.hatebit.utils.FastMathUtils;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

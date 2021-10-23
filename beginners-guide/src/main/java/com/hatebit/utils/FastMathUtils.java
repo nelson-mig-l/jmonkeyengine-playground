@@ -1,4 +1,4 @@
-package com.hatebit.chapter2;
+package com.hatebit.utils;
 
 import com.jme3.math.FastMath;
 
