@@ -30,7 +30,7 @@ public class CubeChaserState extends AbstractAppState {
     private int counter = 0;
 
     @Override
-    public void initialize(final AppStateManager stateManager, Application app) {
+    public void initialize(final AppStateManager stateManager, final Application app) {
         super.initialize(stateManager, app);
         this.app = (SimpleApplication) app;
         this.cam = this.app.getCamera();

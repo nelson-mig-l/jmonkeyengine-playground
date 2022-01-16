@@ -1,16 +1,11 @@
 package com.hatebit.game;
 
-import com.hatebit.game.enitty.EntityFactory;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
-import java.util.Random;
 
 public class Main extends SimpleApplication {
-
-    private static final int CREEP_COUNT = 6;
 
     public static void main(String[] args) {
         final Main app = new Main();
@@ -32,16 +27,7 @@ public class Main extends SimpleApplication {
         cam.lookAt(new Vector3f(0, 0, 6f), Vector3f.UNIT_Y);
         flyCam.setEnabled(true);
 
-        final EntityFactory factory = new EntityFactory(assetManager);
-        rootNode.attachChild(factory.floor());
-        rootNode.attachChild(factory.player(0, 0));
-        rootNode.attachChild(factory.tower(-4, 3));
-        rootNode.attachChild(factory.tower(+4, 3));
-        for (int c = 0; c < CREEP_COUNT; c++) {
-            final float x = FastMath.nextRandomInt(-5, 5);
-            final float z = FastMath.nextRandomInt(5, 15);
-            rootNode.attachChild(factory.creep(x, z));
-        }
+        stateManager.attach(new GamePlayAppState());
     }
 
 }

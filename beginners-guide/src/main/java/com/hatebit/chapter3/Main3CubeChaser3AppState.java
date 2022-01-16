@@ -19,7 +19,7 @@ public class Main3CubeChaser3AppState extends SimpleApplication {
 
     @Override
     public void simpleUpdate(final float tsp) {
-        System.out.println("Chase counter: " + stateManager.getState(CubeChaserState.class).getCounter());
+        //System.out.println("Chase counter: " + stateManager.getState(CubeChaserState.class).getCounter());
     }
 
 }
