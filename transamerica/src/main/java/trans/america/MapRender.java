@@ -3,7 +3,6 @@ package trans.america;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import org.lwjgl.Sys;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,16 +10,16 @@ import java.util.Set;
 public class MapRender {
 
     private final Map map;
-    private final TileUtils tileUtils;
+    private final TileFactory tileFactory;
 
     private int lastXx = Integer.MIN_VALUE;
     private int lastYy = Integer.MIN_VALUE;
 
     private Set<String> loaded = new HashSet<>();
 
-    public MapRender(Map map, TileUtils tileUtils) {
+    public MapRender(Map map, TileFactory tileFactory) {
         this.map = map;
-        this.tileUtils = tileUtils;
+        this.tileFactory = tileFactory;
     }
 
     public void render(Node rootNode, final int xx, final int yy) {
@@ -47,17 +46,16 @@ public class MapRender {
                 loaded.add(name);
                 switch (tile) {
                     case NONE:
-                        rootNode.attachChild(tileUtils.createCube(name, position, ColorRGBA.White));
+                        rootNode.attachChild(tileFactory.createOutOfBounds(name, x, y));
                         break;
                     case SMOOTH:
-                        rootNode.attachChild(tileUtils.createCube(name, position, ColorRGBA.Yellow));
+                        rootNode.attachChild(tileFactory.createGround(name, x, y, ColorRGBA.Yellow));
                         break;
                     case RUGGED:
-                        rootNode.attachChild(tileUtils.createCube(name, position, ColorRGBA.Brown));
+                        rootNode.attachChild(tileFactory.createGround(name, x, y, ColorRGBA.Brown));
                         break;
                     default:
-                        // This is bad!!1
-                        rootNode.attachChild(tileUtils.createCube(name, position, ColorRGBA.Cyan));
+                        rootNode.attachChild(tileFactory.createGround(name, x, y, ColorRGBA.Cyan));
                 }
             }
         }
