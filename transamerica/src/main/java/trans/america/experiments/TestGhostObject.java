@@ -8,6 +8,8 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -45,6 +47,9 @@ public class TestGhostObject extends SimpleApplication {
 
         Node physicsBox1 = PhysicsTestHelper.createPhysicsTestNode(assetManager, shape, 1);
         physicsBox1.setName("box1");
+        final Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        material.setColor("Color", ColorRGBA.Red);
+        physicsBox1.setMaterial(material);
         physicsBox1.getControl(RigidBodyControl.class).setPhysicsLocation(new Vector3f(0, 40, 0));
         rootNode.attachChild(physicsBox1);
         getPhysicsSpace().add(physicsBox1);

@@ -2,6 +2,8 @@ package trans.america;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -11,11 +13,15 @@ import com.jme3.system.AppSettings;
 
 public class TransAm extends SimpleApplication implements AnalogListener {
 
-    private Node player;
+    private Player player;
+    private Node playerNode;
+    //private Vehicle vehicle;
 
     private Gui gui;
 
     private MapRender mapRender;
+    private PhysicsSpace physicsSpace;
+
 
     public static void main(String[] args) {
         AppSettings settings = new AppSettings(true);
@@ -31,16 +37,17 @@ public class TransAm extends SimpleApplication implements AnalogListener {
 
     @Override
     public void simpleInitApp() {
-//        BulletAppState bulletAppState = new BulletAppState();
-//        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
-//        stateManager.attach(bulletAppState);
+        physicsSpace = initializePhysics();
+
+        createPlayer();
 
         final Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", ColorRGBA.Red);
-        player = new Player(material);
-        rootNode.attachChild(player);
+        material.setColor("Color", ColorRGBA.Pink);
+        //vehicle = new Vehicle(material, rootNode, physicsSpace);
+        //rootNode.attachChild(vehicle);
 
-        new CameraManager(flyCam, cam).setDefault(player);
+        // https://hub.jmonkeyengine.org/t/solved-camera-that-follow-a-object/17484/11
+        new CameraManager(flyCam, cam).setDefault(this.playerNode);
         final Controls controls = new Controls(inputManager, this);
         gui = new Gui(assetManager, guiNode);
 
@@ -51,8 +58,8 @@ public class TransAm extends SimpleApplication implements AnalogListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-        gui.update(player);
-        mapRender.render(rootNode,
+        gui.update(playerNode);
+        mapRender.render(rootNode, physicsSpace,
                 (int)Math.rint(player.getLocalTranslation().x),
                 (int)Math.rint(player.getLocalTranslation().z)
         );
@@ -62,7 +69,8 @@ public class TransAm extends SimpleApplication implements AnalogListener {
     public void onAnalog(final String name, float value, float tpf) {
         if (name.equals(Controls.PLAYER_FORWARD)) {
             final Vector3f mult = player.getLocalRotation().getRotationColumn(2).mult(5 * tpf);
-            player.move(mult);
+            //player.move(mult);
+            player.go();
         }
         if (name.equals(Controls.PLAYER_BACKWARD)) {
             final Vector3f mult = player.getLocalRotation().getRotationColumn(2).mult(-5 * tpf);
@@ -74,5 +82,22 @@ public class TransAm extends SimpleApplication implements AnalogListener {
         if (name.equals(Controls.PLAYER_LEFT)) {
             player.rotate(0, FastMathUtils.toRadians(90) * tpf, 0);
         }
+    }
+
+    private PhysicsSpace initializePhysics() {
+        BulletAppState bulletAppState = new BulletAppState();
+        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        stateManager.attach(bulletAppState);
+        return bulletAppState.getPhysicsSpace();
+    }
+
+    private void createPlayer() {
+        final Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        material.setColor("Color", ColorRGBA.Red);
+        player = new Player(material);
+        physicsSpace.add(player);
+        this.playerNode = new Node();
+        this.playerNode.attachChild(player);
+        rootNode.attachChild(this.playerNode);
     }
 }

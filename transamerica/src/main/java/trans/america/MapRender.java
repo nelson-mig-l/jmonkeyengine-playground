@@ -1,7 +1,9 @@
 package trans.america;
 
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 import java.util.HashSet;
@@ -22,7 +24,7 @@ public class MapRender {
         this.tileFactory = tileFactory;
     }
 
-    public void render(Node rootNode, final int xx, final int yy) {
+    public void render(Node rootNode, PhysicsSpace physicsSpace, final int xx, final int yy) {
         if (lastXx == xx && lastYy == yy) {
             return;
         }
@@ -41,7 +43,6 @@ public class MapRender {
             final int x = Integer.parseInt(tokens[0]);
             final int y = Integer.parseInt(tokens[1]);
             final Map.Tile tile = map.get(x, y);
-            final Vector3f position = new Vector3f(x, -0.1f, y);
             if (!loaded.contains(name)) {
                 loaded.add(name);
                 switch (tile) {
@@ -49,10 +50,14 @@ public class MapRender {
                         rootNode.attachChild(tileFactory.createOutOfBounds(name, x, y));
                         break;
                     case SMOOTH:
-                        rootNode.attachChild(tileFactory.createGround(name, x, y, ColorRGBA.Yellow));
+                        final Geometry smooth = tileFactory.createGround(name, x, y, ColorRGBA.Yellow);
+                        physicsSpace.add(smooth);
+                        rootNode.attachChild(smooth);
                         break;
                     case RUGGED:
-                        rootNode.attachChild(tileFactory.createGround(name, x, y, ColorRGBA.Brown));
+                        final Geometry rugged = tileFactory.createGround(name, x, y, ColorRGBA.Brown);
+                        physicsSpace.add(rugged);
+                        rootNode.attachChild(rugged);
                         break;
                     default:
                         rootNode.attachChild(tileFactory.createGround(name, x, y, ColorRGBA.Cyan));
@@ -61,6 +66,7 @@ public class MapRender {
         }
         for (final String name : toFree) {
             rootNode.detachChildNamed(name);
+            // TODO: also free physics control
         }
         loaded.removeAll(toFree);
     }

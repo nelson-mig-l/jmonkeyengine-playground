@@ -1,6 +1,8 @@
 package trans.america;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -45,6 +47,10 @@ public class TileFactory {
         material.setColor("Color", color);
         geometry.setMaterial(material);
         geometry.setLocalTranslation(position);
+
+        final RigidBodyControl physicsControl = new RigidBodyControl(new BoxCollisionShape(new Vector3f(0.5f, 0.5f, 0.5f)), 0);
+        geometry.addControl(physicsControl);
+
         return geometry;
 
     }
