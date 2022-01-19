@@ -6,7 +6,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 
 public class MyCamera implements ActionListener {
-    private static final Vector3f CAM_RELATIVE_TO_CAR = new Vector3f(0, 5,  10);
+    private static final Vector3f CAM_RELATIVE_TO_CAR = new Vector3f(0, 3, 10);
 
     private final Camera cam;
 

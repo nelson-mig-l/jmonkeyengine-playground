@@ -8,9 +8,8 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import trans.america.experiments.PhysicsTestHelper;
-import trans.america.experiments.fancy.car.PlayerCar;
+import trans.america.experiments.fancy.car.*;
 
 public class MyFancyCarExample extends SimpleApplication {
 
@@ -39,16 +38,18 @@ public class MyFancyCarExample extends SimpleApplication {
 
 
         final World world = new World(rootNode, getPhysicsSpace());
-
         PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, getPhysicsSpace());
 
 
+        final CarDefinition carDefinition = new CarDefinitionFactory(assetManager).defaultFancyCar();
+        carNode = carDefinition.getModel();
+        final PhysicalCar physicalCar = new PhysicalCar(carDefinition);
+        DebugUtils.attachCoordinateAxes(physicalCar, assetManager);
+        final PlayerCar player = new PlayerCar(physicalCar, inputManager);
+        world.addVehicle(physicalCar);
+        getPhysicsSpace().addCollisionListener(physicalCar);
 
-        final PlayerCar player = buildPlayer();
-        world.addVehicle(player);
-        getPhysicsSpace().addCollisionListener(player);
-
-        buildGhostCar();
+        //buildGhostCar();
 
         DirectionalLight dl = new DirectionalLight();
         dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
@@ -60,16 +61,12 @@ public class MyFancyCarExample extends SimpleApplication {
     }
 
 
-    private PlayerCar buildPlayer() {
-        carNode = (Node) assetManager.loadModel("Models/Ferrari/Car.scene");
-        return new PlayerCar(carNode, inputManager);
-    }
-
-    private void buildGhostCar() {
-        final Spatial model = assetManager.loadModel("car/car.obj");
-        model.setLocalTranslation(3, -5, 3);
-        rootNode.attachChild(model);
-    }
+//
+//    private void buildGhostCar() {
+//        final Spatial model = assetManager.loadModel("car/car.obj");
+//        model.setLocalTranslation(3, -5, 3);
+//        rootNode.attachChild(model);
+//    }
 
     @Override
     public void simpleUpdate(float tpf) {

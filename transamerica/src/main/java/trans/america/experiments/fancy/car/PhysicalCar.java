@@ -2,9 +2,12 @@ package trans.america.experiments.fancy.car;
 
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 
@@ -12,10 +15,10 @@ public class PhysicalCar extends Node implements PhysicsCollisionListener {
 
     private final VehicleControl control;
 
-    PhysicalCar(FancyCarDefinition carDefinition) {
+    public PhysicalCar(CarDefinition carDefinition) {
         super(carDefinition.getName());
 
-        final CollisionShape carHull = CollisionShapeFactory.createDynamicMeshShape(carDefinition.getChassis());
+        final CollisionShape carHull = carDefinition.getChassis();
 
         //Create a vehicle control
         control = new VehicleControl(carHull, carDefinition.getMass());
@@ -31,7 +34,7 @@ public class PhysicalCar extends Node implements PhysicsCollisionListener {
         for (WheelDefinition.Position position : WheelDefinition.Position.values()) {
             final WheelDefinition wheelDefinition = carDefinition.getWheel(position);
             control.addWheel(wheelDefinition.parent, wheelDefinition.connectionPoint,
-                    carDefinition.getWheelDirection(), carDefinition.getWheelAxle(), 0.2f, wheelDefinition.radius, wheelDefinition.isFrontWheel);
+                    carDefinition.getWheelDirection(), carDefinition.getWheelAxle(), wheelDefinition.restLength, wheelDefinition.radius, wheelDefinition.isFrontWheel);
             wheelDefinition.frictionSlip.ifPresent(value -> {
                 System.out.println(position + " has friction " + value);
                 control.getWheel(position.ordinal()).setFrictionSlip(value);
@@ -45,13 +48,13 @@ public class PhysicalCar extends Node implements PhysicsCollisionListener {
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-        if (event.getNodeB().getName() != null && !event.getNodeB().getName().equals("Box")) {
-            System.out.println("COLLISION!!!");
-            System.out.println(event.getNodeA().getName() + " -> " + event.getNodeB().getName());
-        }
+//        if (event.getNodeB().getName() != null && !event.getNodeB().getName().equals("Box")) {
+//            System.out.println("COLLISION!!!");
+//            System.out.println(event.getNodeA().getName() + " -> " + event.getNodeB().getName());
+//        }
     }
 
-    public VehicleControl getControls() {
+    public VehicleControl getControl() {
         return control;
     }
 
