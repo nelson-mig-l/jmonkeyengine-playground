@@ -2,14 +2,14 @@ package trans.america.experiments.fancy.car;
 
 import com.jme3.math.FastMath;
 
-public class DefaultSuspensionDefinition implements SuspensionDefinition {
+public class CustomSuspensionDefinition implements SuspensionDefinition {
 
     private final float stiffness; // 200=f1 car
     private final float compression; // (lower than damp!)
     private final float damping;
     private final float maxForce;
 
-    public DefaultSuspensionDefinition(float stiffness, float compressionValue, float dampingValue, float maxForce) {
+    public CustomSuspensionDefinition(float stiffness, float compressionValue, float dampingValue, float maxForce) {
         this.stiffness = stiffness;
         this.compression = compressionValue * 2.0f * FastMath.sqrt(stiffness);
         this.damping = dampingValue * 2.0f * FastMath.sqrt(stiffness);

@@ -2,8 +2,6 @@ package trans.america.experiments.fancy.car;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
-import trans.america.experiments.fancy.car.FancyCarDefinition;
-import trans.america.experiments.fancy.car.PhysicalCar;
 
 public class CarDefinitionFactory {
 
@@ -20,5 +18,9 @@ public class CarDefinitionFactory {
 
     public CarDefinition defaultDummyCar() {
         return new DummyCarDefinition(assetManager);
+    }
+
+    public CarDefinition defaultCustomCar() {
+        return new CustomCarDefinition(assetManager);
     }
 }

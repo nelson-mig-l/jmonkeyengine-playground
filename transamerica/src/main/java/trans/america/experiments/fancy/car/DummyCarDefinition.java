@@ -10,7 +10,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 
 import java.util.HashMap;
@@ -22,7 +21,7 @@ public class DummyCarDefinition implements CarDefinition {
     private static final Vector3f WHEEL_AXLE = new Vector3f(-1, 0, 0);
 
     private final Map<WheelDefinition.Position, WheelDefinition> wheels = new HashMap<>();
-    private final Node node = new Node();
+    private final Node model = new Node();
 
     public DummyCarDefinition(AssetManager assetManager) {
         final Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -51,7 +50,7 @@ public class DummyCarDefinition implements CarDefinition {
             geo.rotate(0, FastMath.HALF_PI, 0);
             geo.setMaterial(material);
             wheels.put(position, new WheelDefinition(parent, connectionPoint[index], radius, restLength, isFrontWheel[index]));
-            node.attachChild(parent);
+            model.attachChild(parent);
         }
 
     }
@@ -63,15 +62,15 @@ public class DummyCarDefinition implements CarDefinition {
 
     @Override
     public CollisionShape getChassis() {
-        CompoundCollisionShape chassis = new CompoundCollisionShape();
-        BoxCollisionShape box = new BoxCollisionShape(new Vector3f(1.2f, 0.5f, 2.4f));
+        final CompoundCollisionShape chassis = new CompoundCollisionShape();
+        final BoxCollisionShape box = new BoxCollisionShape(new Vector3f(1.2f, 0.5f, 2.4f));
         chassis.addChildShape(box, new Vector3f(0, 1, 0));
         return chassis;
     }
 
     @Override
     public Node getModel() {
-        return node;
+        return model;
     }
 
     @Override
@@ -86,7 +85,7 @@ public class DummyCarDefinition implements CarDefinition {
 
     @Override
     public SuspensionDefinition getSuspensionConfiguration() {
-        return new DefaultSuspensionDefinition(60.0f, 0.3f, 0.4f, 10000.0f);
+        return new CustomSuspensionDefinition(60.0f, 0.3f, 0.4f, 10000.0f);
     }
 
     @Override

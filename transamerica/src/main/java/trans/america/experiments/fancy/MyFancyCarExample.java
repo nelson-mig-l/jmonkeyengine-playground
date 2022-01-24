@@ -8,6 +8,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import trans.america.experiments.PhysicsTestHelper;
 import trans.america.experiments.fancy.car.*;
 
@@ -16,6 +17,10 @@ public class MyFancyCarExample extends SimpleApplication {
     private BulletAppState bulletAppState;
     private Node carNode;
     private MyCamera myCamera;
+
+
+    PlayerCar player;
+    PhysicalCar pc;
 
     public static void main(String[] args) {
         MyFancyCarExample app = new MyFancyCarExample();
@@ -41,15 +46,20 @@ public class MyFancyCarExample extends SimpleApplication {
         PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, getPhysicsSpace());
 
 
-        final CarDefinition carDefinition = new CarDefinitionFactory(assetManager).defaultFancyCar();
+        final CarDefinition carDefinition = new CarDefinitionFactory(assetManager).defaultCustomCar();
         carNode = carDefinition.getModel();
         final PhysicalCar physicalCar = new PhysicalCar(carDefinition);
         DebugUtils.attachCoordinateAxes(physicalCar, assetManager);
-        final PlayerCar player = new PlayerCar(physicalCar, inputManager);
+        player = new PlayerCar(physicalCar, inputManager);
+        pc = physicalCar;
         world.addVehicle(physicalCar);
-        getPhysicsSpace().addCollisionListener(physicalCar);
+        getPhysicsSpace().addCollisionListener(physicalCar); // what about this?
 
         //buildGhostCar();
+//        final Spatial model = assetManager.loadModel("car/low/chassis.fbx");
+//        model.setLocalTranslation(3, -5, 3);
+//        rootNode.attachChild(model);
+
 
         DirectionalLight dl = new DirectionalLight();
         dl.setDirection(new Vector3f(-0.5f, -1f, -0.3f).normalizeLocal());
@@ -74,6 +84,7 @@ public class MyFancyCarExample extends SimpleApplication {
 //        cam.setLocation(carNode.localToWorld(new Vector3f(0, 5 /* units above car*/, 10 /* units behind car*/), null));
 //        cam.lookAt(this.carNode.getWorldTranslation(), Vector3f.UNIT_Y);
         myCamera.updateCamera(carNode);
+        //pc.getControl().getWheel(0)
     }
 }
 
