@@ -19,11 +19,11 @@ public class CustomCarDefinition implements CarDefinition {
     private static final Vector3f WHEEL_AXLE = new Vector3f(-1, 0, 0);
 
     private final Map<WheelDefinition.Position, WheelDefinition> wheels = new HashMap<>();
-    private Node model = new Node();
-    private Spatial chassis;
+    private final Node model = new Node();
+    private final Spatial chassis;
 
     public CustomCarDefinition(AssetManager assetManager) {
-        chassis = assetManager.loadModel("car/low/chassis4.fbx");
+        chassis = assetManager.loadModel("car/low/chassis.fbx");
         chassis.setLocalScale(0.01f);
         model.attachChild(chassis);
 
@@ -42,11 +42,10 @@ public class CustomCarDefinition implements CarDefinition {
         final boolean[] isFrontWheel = {false, false, true, true};
 
 
-        final Spatial wheel = assetManager.loadModel("car/low/wheel-fr-2.fbx");
+        final Spatial wheel = assetManager.loadModel("car/low/wheel-fr.fbx");
         wheel.setLocalScale(0.01f);
         final Geometry wheelGeometry = findGeom(wheel, "whell-submesh");
         final BoundingBox box = (BoundingBox) wheelGeometry.getModelBound();
-        final Vector3f center = box.getCenter().mult(-1);
         wheelGeometry.center();
         for (WheelDefinition.Position position : WheelDefinition.Position.values()) {
             final int index = position.ordinal();
@@ -76,8 +75,7 @@ public class CustomCarDefinition implements CarDefinition {
 
     @Override
     public CollisionShape getChassis() {
-        final CollisionShape shape = CollisionShapeFactory.createDynamicMeshShape(chassis);
-        return shape;
+        return CollisionShapeFactory.createDynamicMeshShape(chassis);
     }
 
     @Override

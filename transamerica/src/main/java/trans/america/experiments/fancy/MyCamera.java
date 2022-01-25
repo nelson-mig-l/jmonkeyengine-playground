@@ -25,12 +25,9 @@ public class MyCamera implements ActionListener {
 
     public void updateCamera(Node target) {
         if (inCar) {
-            //cam.setLocation(target.localToWorld(new Vector3f(0, 5 /* units above car*/, 10 /* units behind car*/), null));
             cam.setLocation(target.localToWorld(CAM_RELATIVE_TO_CAR, null));
-            cam.lookAt(target.getWorldTranslation(), Vector3f.UNIT_Y);
-        } else {
-            cam.lookAt(target.getWorldTranslation(), Vector3f.UNIT_Y);
         }
+        cam.lookAt(target.getWorldTranslation(), Vector3f.UNIT_Y);
     }
 
     @Override

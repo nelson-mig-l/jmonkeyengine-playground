@@ -6,7 +6,10 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.FogFilter;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import trans.america.experiments.PhysicsTestHelper;
@@ -29,10 +32,7 @@ public class MyFancyCarExample extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        bulletAppState = new BulletAppState();
-        bulletAppState.setDebugEnabled(true);
-        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
-        stateManager.attach(bulletAppState);
+        initializePhysics();
 
 
         cam.setFrustumFar(150f);
@@ -42,8 +42,12 @@ public class MyFancyCarExample extends SimpleApplication {
         inputManager.addListener(myCamera, "Cam");
 
 
+        viewPort.setBackgroundColor(ColorRGBA.Cyan);
         final World world = new World(rootNode, getPhysicsSpace());
         PhysicsTestHelper.createPhysicsTestWorld(rootNode, assetManager, getPhysicsSpace());
+
+
+        initializeFog();
 
 
         final CarDefinition carDefinition = new CarDefinitionFactory(assetManager).defaultCustomCar();
@@ -70,21 +74,25 @@ public class MyFancyCarExample extends SimpleApplication {
         return bulletAppState.getPhysicsSpace();
     }
 
+    private void initializeFog() {
+        final FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        viewPort.addProcessor(fpp);
+        final FogFilter fogFilter = new FogFilter();
+        fogFilter.setFogDistance(155);
+        fogFilter.setFogDensity(2.0f);
+        fpp.addFilter(fogFilter);
+    }
 
-//
-//    private void buildGhostCar() {
-//        final Spatial model = assetManager.loadModel("car/car.obj");
-//        model.setLocalTranslation(3, -5, 3);
-//        rootNode.attachChild(model);
-//    }
+    private void initializePhysics() {
+        bulletAppState = new BulletAppState();
+        bulletAppState.setDebugEnabled(true);
+        bulletAppState.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
+        stateManager.attach(bulletAppState);
+    }
 
     @Override
     public void simpleUpdate(float tpf) {
-        //cam.lookAt(carNode.getWorldTranslation(), Vector3f.UNIT_Y);
-//        cam.setLocation(carNode.localToWorld(new Vector3f(0, 5 /* units above car*/, 10 /* units behind car*/), null));
-//        cam.lookAt(this.carNode.getWorldTranslation(), Vector3f.UNIT_Y);
         myCamera.updateCamera(carNode);
-        //pc.getControl().getWheel(0)
     }
 }
 
